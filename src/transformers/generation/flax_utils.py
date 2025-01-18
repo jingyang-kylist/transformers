@@ -611,6 +611,7 @@ class FlaxGenerationMixin:
             model_kwargs=model_kwargs,
         )
 
+        @jax.jit
         def greedy_search_cond_fn(state):
             """state termination condition fn."""
             has_reached_max_length = state.cur_len == max_length
@@ -618,6 +619,7 @@ class FlaxGenerationMixin:
             finish_generation = jnp.logical_or(has_reached_max_length, all_sequence_finished)
             return ~finish_generation
 
+        @jax.jit
         def greedy_search_body_fn(state):
             """state update fn."""
             model_outputs = model(state.running_token, params=params, **state.model_kwargs)
